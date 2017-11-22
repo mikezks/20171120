@@ -14,23 +14,41 @@ export class FlightSearchComponent implements OnInit {
   public to: string = 'Graz';
   public date: string = (new Date()).toISOString();
   public selectedFlight: Flight;
-
-  public get flights() {
-    return this.flightService.flights;
-  }
+  public flights: Flight[] = [];
   
   constructor(private flightService: FlightService) { }
 
   ngOnInit() {
+    // this.changePropertyDemo();
   }
 
   public search(): void {
       this.flightService
-        .find(this.from, this.to);
+        .find(this.from, this.to)
+        .subscribe(
+          (flights: Flight[]) => {
+              this.flights = flights;
+          },
+          (err) => {
+              console.warn(err);
+          }
+      );;
   }
 
   public select(f: Flight): void {
     this.selectedFlight = f;
   }
 
+  // Hiermit kann man Properties des aktuellen Objekts auslesen
+  // und auch ändern.
+  private changePropertyDemo() {
+    console.log('this:', this);
+    for (let property in this) {
+      console.log('Property of this:', this[property]);
+      if (this[property] == "Hamburg") {
+        this[property] = "Berlin ist das neue Hamburg!";
+        console.log('Property wurde geändert:', this[property]);
+      }
+    }
+  }
 }
